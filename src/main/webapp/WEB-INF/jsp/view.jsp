@@ -1,0 +1,83 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Department Details</title>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+	integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+	crossorigin="anonymous">
+<style>
+table, th, td {
+	border: 1px solid white;
+	border-collapse: collapse;
+}
+
+th, td {
+	padding: 5px;
+	text-align: left; //
+	color: white;
+}
+
+th {
+	color: black;
+	width: 50%;
+}
+
+table#t {
+	width: 100%;
+	background-color: white;
+}
+</style>
+</head>
+<body background="img4.jpg">
+	<div class="container">
+
+		<div class="text-center">
+			<div class="breadcrumb"></div>
+
+
+			<h4>
+				<h5>
+					<a href="admin.html" role="button" style="float: left; color: tan;">Back</a>
+				</h5>
+				<a href="home.html" role="button" style="float: right; color: tan;">Logout
+				</a>
+			</h4>
+			<h2 style="text-align: center; color: tan;">Department Details</h2>
+		</div>
+
+
+		<table style="width: 50%; color: white;" align="center">
+			<tr>
+				<th style="text-align: center; color: tan;">Department Name</th>
+				<td>${department.department}</td>
+			</tr>
+			<tr>
+				<th style="text-align: center; color: tan;">Programs</th>
+				<td><c:forEach items="${department.programs}" var="program">
+						<ul>
+							<li>${program.program}</li>
+						</ul>
+					</c:forEach></td>
+			</tr>
+			<tr>
+				<th style="text-align: center; color: tan;">Additional
+					Requirements</th>
+				<td><c:forEach items="${department.addField}" var="app">
+
+						<ul>
+							<li>${app.field_name}</li>
+						</ul>
+
+
+					</c:forEach></td>
+			</tr>
+		</table>
+	</div>
+
+</body>
+</html>

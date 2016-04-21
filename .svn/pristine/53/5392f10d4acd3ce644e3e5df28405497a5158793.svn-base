@@ -1,0 +1,83 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>User Registration</title>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+	integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+	crossorigin="anonymous">
+</head>
+<body background="img4.jpg" background-size="100">
+	
+	<a href="home.html" class="btn btn-primary pull-right active"
+		role="button">Home Page </a>
+		<a class="btn btn-primary btn-md active pull-right active"
+		href="login.html" role="button">Login</a>
+	<br>
+	<br>
+	<h2 class="text-center" style="color: tan;">User Registration</h2>
+	<br />
+
+	<form class="form-horizontal" action="userRegistration.html"
+		method="post">
+	
+		<c:if test="${mail == 1 }">
+			<h4 class="text-center" style="color: tan;"> Email Already Exists!!!</h4>
+		</c:if>
+		<div class="form-group">
+			<label class="col-sm-4 control-label" style="color: tan;">Email</label>
+			<div class="col-sm-4">
+			<input type="text" name="email" class="form-control" placeholder="Email" required  value="${mail == '1' ? email: ''}"/> 
+			
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="col-sm-4 control-label" style="color: tan;">Password</label>
+			<div class="col-sm-4">
+			<input type="password" name="password" class="form-control" placeholder="Password" required value="${mail == '1' ? password: ''}"/>
+				
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="col-sm-4 control-label" style="color: tan;">Last
+				Name</label>
+			<div class="col-sm-4">
+				
+					
+					<input type="text" name="last_name" class="form-control" placeholder="Last Name" required value="${mail == '1' ? lastname: ''}"/>
+				
+
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="col-sm-4 control-label" style="color: tan;">First
+				Name</label>
+			<div class="col-sm-4">
+				
+					<input type="text" name="first_name" class="form-control" placeholder="First Name" required value="${mail == '1' ? firstname: ''}"/>
+				
+
+			</div>
+		</div>
+
+		<input type="hidden" path="typeOfUser" value="student" />
+		<input type="Submit"
+			class="btn btn-success btn-md active col-sm-offset-7"
+			value="Register">
+
+
+
+	</form>
+	<br />
+	
+</body>
+</html>

@@ -1,0 +1,27 @@
+package gapp.model.dao.jpa;
+
+import gapp.model.Users;
+import gapp.model.dao.UsersDao;
+
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import org.springframework.stereotype.Repository;
+
+@Repository
+public class UsersDaoImpl implements UsersDao {
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+	@Override
+	public List<Users> getUsers(String email, String applicationstatus) {
+		
+		return entityManager.createQuery("select u from Users u JOIN u.application a where u.email = :email and a.applicationStatus = :applicationstatus", Users.class)
+				.setParameter("email", email).setParameter("applicationstatus", applicationstatus).getResultList();
+
+	}
+
+}

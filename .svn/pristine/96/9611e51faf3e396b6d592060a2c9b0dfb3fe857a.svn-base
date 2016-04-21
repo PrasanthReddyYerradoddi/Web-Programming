@@ -1,0 +1,292 @@
+package gapp.web.controller;
+
+import gapp.model.ApplicationAdditionalFields;
+import gapp.model.Departments;
+import gapp.model.Programs;
+import gapp.model.Users;
+import gapp.model.dao.AdditionalFieldDao;
+import gapp.model.dao.DepartmentDao;
+import gapp.model.dao.ProgramsDao;
+import gapp.model.dao.UsersDao;
+import gapp.web.validator.UserValidator;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.criteria.CriteriaBuilder.In;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
+
+@Controller
+@SessionAttributes(value = { "dept", "pgm", "addinfo" })
+public class ApplicationController {
+
+	@Autowired
+	private UsersDao usersDao;
+
+	@Autowired
+	private DepartmentDao departmentDao;
+
+	@Autowired
+	private ProgramsDao programDao;
+
+	@Autowired
+	private AdditionalFieldDao additonalFieldDao;
+
+	@Autowired
+	private UserValidator userValidator;
+
+	@RequestMapping({ "/index.html", "/home.html" })
+	public String home() {
+		return "home";
+	}
+
+	// Registration
+	@RequestMapping(value = "/userRegistration.html", method = RequestMethod.GET)
+	public String userRegistration(ModelMap models) {
+		models.put("users", new Users());
+
+		return "userRegistration";
+	}
+
+	@RequestMapping(value = "/userRegistration.html", method = RequestMethod.POST)
+	public String userRegistration(@RequestParam String email,
+			@RequestParam String password, @RequestParam String last_name,
+			@RequestParam String first_name, ModelMap models) {
+		Users register = new Users();
+
+		List<Users> email1 = usersDao.getEmails(email);
+
+		if (email1.size() > 0) {
+			models.put("mail", 1);
+			models.put("email", email);
+			models.put("password", password);
+			models.put("lastname", last_name);
+			models.put("firstname", first_name);
+			return "userRegistration";
+		}
+		register.setEmail(email);
+		register.setPassword(password);
+		register.setFirst_name(first_name);
+		register.setLast_name(last_name);
+
+		register = usersDao.register(register);
+		models.put("login", 1);
+		return "login";
+
+	}
+
+	// Login
+	@RequestMapping(value = "/login.html", method = RequestMethod.GET)
+	public String login(ModelMap models, HttpServletRequest request) {
+		models.put("users", new Users());
+		models.put("login", 0);
+		HttpSession session = request.getSession();
+		if (session == null)
+			return "login";
+		return "login";
+	}
+
+	@RequestMapping(value = "/login.html", method = RequestMethod.POST)
+	public String login(@RequestParam String email,
+			@RequestParam String password, ModelMap models,
+			HttpServletRequest request) {
+		List<Users> details = usersDao.getUser();
+		HttpSession session = request.getSession();
+		for (Users u : details) {
+			if (!u.getEmail().equalsIgnoreCase(email)) {
+				models.put("login", 2);
+				models.put("email", email);
+				models.put("password", password);
+				return "login";
+			}
+			if (u.getEmail().equalsIgnoreCase(email)
+					&& u.getPassword().equalsIgnoreCase(password)) {
+				if (u.getTypeOfUser().equalsIgnoreCase("admin")) {
+
+					session.setAttribute("loginSession", u);
+					return "redirect:admin.html";
+				} else if (u.getTypeOfUser().equalsIgnoreCase("student")) {
+					session.setAttribute("loginSession", u);
+					return "redirect:student.html";
+				} else {
+					session.setAttribute("loginSession", u);
+					return "redirect:staff.html";
+				}
+			}
+		}
+		return "login";
+
+	}
+
+	@RequestMapping("/student.html")
+	public String student() {
+		return "student";
+	}
+
+	@RequestMapping("/staff.html")
+	public String staff() {
+		return "staff";
+	}
+
+	@RequestMapping("/admin.html")
+	public String admin(ModelMap models, HttpServletRequest request) {
+		List<Departments> list = departmentDao.getDepartments();
+		models.put("list", list);
+		HttpSession session = request.getSession();
+		models.put("name", session.getAttribute("loginSession"));
+
+		return "admin";
+	}
+
+	// Add Department
+	@RequestMapping(value = "/addDepartment.html", method = RequestMethod.GET)
+	public String addDepartment(ModelMap models) {
+
+		return "addDepartment";
+	}
+
+	@RequestMapping(value = "/addDepartment.html", method = RequestMethod.POST)
+	public String addDepartment(@RequestParam String deptName,
+			@RequestParam List<String> program,
+			@RequestParam List<String> additionalRequirements) {
+
+		Departments department = new Departments();
+		department.setDepartment(deptName);
+		Programs programs = new Programs();
+		ApplicationAdditionalFields appfield = new ApplicationAdditionalFields();
+
+		department = departmentDao.addDepartment(department);
+		for (String i : program) {
+			if (!i.equalsIgnoreCase("")) {
+				programs.setProgram(i);
+				programs.setDepartment(department);
+				programDao.setPrograms(programs);
+			}
+			
+		}
+		for (String j : additionalRequirements) {
+			if (!j.equalsIgnoreCase("")) {
+				appfield.setField_name(j);
+				appfield.setDepartment(department);
+				additonalFieldDao.addField(appfield);
+			}
+		}
+
+		return "redirect:admin.html";
+	}
+
+	// view
+	@RequestMapping("/view.html")
+	public String view(ModelMap models, @RequestParam Integer id) {
+
+		Departments department = departmentDao.getDepartment(id);
+
+		models.put("department", department);
+		return "view";
+	}
+
+	// Edit
+	@RequestMapping(value = "/edit.html", method = RequestMethod.GET)
+	public String edit(ModelMap models, @RequestParam Integer id) {
+		models.put("dept", departmentDao.getDepartment(id));
+		
+
+		return "edit";
+	}
+
+	@RequestMapping(value = "/edit.html", method = RequestMethod.POST)
+	public String edit(ModelMap models, @RequestParam Integer id,
+			@RequestParam List<Integer> pgmid,
+			@RequestParam List<Integer> fieldid, @RequestParam String deptName,
+			HttpServletRequest request) {
+
+		Departments department = departmentDao.getDepartment(id);
+		department.setDepartment(deptName);
+
+		
+		List<Programs> pl = new ArrayList<Programs>();
+		List<ApplicationAdditionalFields> al = new ArrayList<ApplicationAdditionalFields>();
+		
+		department = departmentDao.addDepartment(department);
+		List<Programs> pgm = programDao.getDepartments(department);
+		List<ApplicationAdditionalFields> field = additonalFieldDao
+				.getDepartments(department);
+
+		for (Integer i : pgmid) {
+			String progrm = request.getParameter("program" + i);
+			for (Programs j : pgm) {
+				if (i == j.getProgram_id()) {
+					j.setProgram(progrm);
+
+					pl.add(programDao.setPrograms(j));
+				}
+			}
+
+		}
+
+		
+		if (!request.getParameter("newProgramCount").equalsIgnoreCase("")
+				&& request.getParameter("newProgramCount") != null) {
+			Integer z = Integer.parseInt(request
+					.getParameter("newProgramCount"));
+			if (z != 0)
+				for (int i = 1; i <= z; i++) {
+					String newProgram = request.getParameter("newProgram" + i);
+					Programs pgms = new Programs();
+					pgms.setProgram(newProgram);
+					pgms.setDepartment(department);
+					pl.add(programDao.setPrograms(pgms));
+				}
+		}
+
+		
+			for (Integer a : fieldid) {
+				String fld = request.getParameter("additionalRequirements" + a);
+				for (ApplicationAdditionalFields b : field) {
+					if (a == b.getField_id()) {
+						b.setField_name(fld);
+						al.add(additonalFieldDao.addField(b));
+					}
+				}
+			}
+		if (!request.getParameter("newFieldCount").equalsIgnoreCase("")
+				&& request.getParameter("newFieldCount") != null) {
+			Integer y = Integer.parseInt(request.getParameter("newFieldCount"));
+			if (y != 0)
+				for (int i = 1; i <= y; i++) {
+					String newField = request
+							.getParameter("newAdditionalRequirements" + i);
+					ApplicationAdditionalFields appfield = new ApplicationAdditionalFields();
+					appfield.setField_name(newField);
+					appfield.setDepartment(department);
+					al.add(additonalFieldDao.addField(appfield));
+				}
+		}
+
+		department.setPrograms(pl);
+		department.setAddField(al);
+		departmentDao.addDepartment(department);
+
+		return "redirect:admin.html";
+	}
+
+	@RequestMapping("/logout.html")
+	public String logout(HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		session.invalidate();
+		return "login";
+
+	}
+}

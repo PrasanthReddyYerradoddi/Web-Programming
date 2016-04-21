@@ -1,0 +1,78 @@
+package gapp.model;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="degree")
+public class Degree {
+
+	@Id
+	@GeneratedValue
+	private int degree_id;
+	
+	private String university;
+	
+	private String time_period;
+	
+	private String degree;
+	
+	private String major;
+
+	@ManyToOne//(cascade=CascadeType.ALL)
+	private Application application;
+	
+	public int getDegree_id() {
+		return degree_id;
+	}
+
+	public void setDegree_id(int degree_id) {
+		this.degree_id = degree_id;
+	}
+
+	public String getUniversity() {
+		return university;
+	}
+
+	public void setUniversity(String university) {
+		this.university = university;
+	}
+
+	public String getTime_period() {
+		return time_period;
+	}
+
+	public void setTime_period(String time_period) {
+		this.time_period = time_period;
+	}
+
+	public String getDegree() {
+		return degree;
+	}
+
+	public void setDegree(String degree) {
+		this.degree = degree;
+	}
+
+	public String getMajor() {
+		return major;
+	}
+
+	public void setMajor(String major) {
+		this.major = major;
+	}
+
+	public Application getApplication() {
+		return application;
+	}
+
+	public void setApplication(Application application) {
+		this.application = application;
+	}
+	
+	
+}

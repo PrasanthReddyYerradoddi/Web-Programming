@@ -1,0 +1,15 @@
+drop table applicationstatus;
+
+drop table applicationadditionalfields;
+
+drop table degree;
+
+drop table application;
+
+drop table programs;
+
+drop table users;
+
+drop table departments;
+
+drop sequence hibernate_sequence;

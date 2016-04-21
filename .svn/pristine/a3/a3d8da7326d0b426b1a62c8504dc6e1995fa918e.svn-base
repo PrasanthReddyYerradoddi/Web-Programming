@@ -1,0 +1,120 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Add New Department</title>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+	integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+	crossorigin="anonymous">
+<script>
+	function add_program() {
+		var form = document.getElementsByTagName('form')[0], input = document
+				.createElement('input');
+
+		var a = document.getElementById("div3");
+		var mybr = document.createElement('br');
+		input.setAttribute('type', 'text');
+		input.setAttribute('name', 'program');
+		input.setAttribute('placeholder', 'Program');
+		input.setAttribute('class', 'form-control');
+		input.setAttribute('style', 'width:300px');
+		form.insertBefore(input, a);
+		form.insertBefore(mybr, input)
+		form.insertBefore(mybr, a)
+
+	};
+</script>
+<script>
+	function add_additionField() {
+		var form = document.getElementsByTagName('form')[0], input = document
+				.createElement('input');
+
+		var a = document.getElementById("div4");
+		var mybr = document.createElement('br');
+		input.setAttribute('type', 'text');
+		input.setAttribute('name', 'additionalRequirements');
+		input.setAttribute('placeholder', 'Additional Requirement')
+		input.setAttribute('class', 'form-control ')
+		input.setAttribute('style', 'width:300px');
+		form.insertBefore(input, a)
+		form.insertBefore(mybr, input)
+		form.insertBefore(mybr, a)
+
+	};
+</script>
+<script>
+	function add() {
+		var newSpan = document.createElement('span');
+		newSpan.setAttribute('class', 'col-sm-3');
+		document.getElementById('div2').appendChild(newSpan);
+		newSpan.innerHTML = "<input type='text' class='form-control' name='program' style='width:300px;float:center' placeholder='Program' />";
+
+	}
+</script>
+<script>
+	var counter = 1;
+	function addInput2(divName) {
+		var newdiv = document.createElement('div');
+		newdiv.innerHTML = "Additional Field "
+				+ " <br><input type='text' class='panel panel-primary' float='right' size=30 name='myInputs[]'>";
+		document.getElementById(divName).appendChild(newdiv);
+		counter++;
+	}
+</script>
+</head>
+<body background="img4.jpg">
+	<h4>
+		<h5>
+			<a href="admin.html" role="button" style="float: left; color: tan;">Back</a>
+		</h5>
+		<a href="home.html" class="btn btn-link pull-right active"
+			role="button">Logout </a>
+	</h4>
+	<br>
+	<br>
+	<h2 class="text-center" style="color: tan;">Add New Department</h2>
+	<br />
+
+	<form class="form-horizontal" action="addDepartment.html" method="post"
+		id="form">
+		<div class="form-group" id="div1">
+			<label class="col-sm-4 control-label" style="color: tan;">Department
+				Name</label>
+			<div class="col-sm-3">
+				<input type="text" class="form-control" name="deptName"
+					placeholder="Department Name" />
+			</div>
+		</div>
+
+		<div class="form-group" id="div2">
+			<label class="col-sm-4 control-label" style="color: tan;">Program</label>
+			<span class="col-sm-3"> <input type="text"
+				class="form-control" name="program" size=30 placeholder="Program" />
+			</span><input type="button" onClick="add_program();"
+				value="Add another program" />
+
+
+		</div>
+
+		<div class="form-group" id="div3">
+			<label class="col-sm-4 control-label" style="color: tan;">Additional
+				Requirements</label> <span class="col-sm-3"> <input type="text"
+				class="form-control" name="additionalRequirements"
+				placeholder="Additional Requirement" />
+			</span><span> <input type="button" onclick="add_additionField()"
+				value="Add another field" />
+			</span>
+		</div>
+
+		<div class="form-group" id="div4">
+			<input type="Submit"
+				class="btn btn-success btn-md active col-md-offset-6" value="Add" />
+		</div>
+	</form>
+
+
+</body>
+</html>

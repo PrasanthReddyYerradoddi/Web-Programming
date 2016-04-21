@@ -1,0 +1,23 @@
+package gapp.web.controller;
+
+import gapp.model.dao.DepartmentDao;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+public class ApplicationController {
+
+    @Autowired
+    private DepartmentDao applicationDao;
+
+    @RequestMapping("/users.html")
+    public String users( ModelMap models )
+    {
+        models.put( "users", applicationDao.getDepartments() );
+        return "users";
+    }
+
+}
